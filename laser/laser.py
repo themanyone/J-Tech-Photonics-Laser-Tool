@@ -8,6 +8,7 @@ from svg_to_gcode.svg_parser import parse_root, Transformation, debug_methods
 from svg_to_gcode.geometry import LineSegmentChain
 from svg_to_gcode.compiler import Compiler, interfaces
 from svg_to_gcode import TOLERANCES
+from svg_to_gcode.formulas import linear_map
 
 svg_name_space = "http://www.w3.org/2000/svg"
 inkscape_name_space = "http://www.inkscape.org/namespaces/inkscape"
@@ -28,8 +29,15 @@ def generate_custom_interface(laser_off_command, laser_power_command):
         def laser_off(self):
             return f"{laser_off_command}"
 
-        def set_laser_power(self, _):
-            return f"{laser_power_command}"
+        def set_laser_power(self, power):
+            # If user-supplied Tool Power Command starts with % e.g. %1000:
+            [a, b, c] = laser_power_command.partition("%")
+            if len(c):
+            # Then calculate laser power as a function of line width.
+                set_power = linear_map(0, float(c), power)
+                return f"{a}{set_power};"
+            else:
+                return f"{laser_power_command}"
 
     return CustomInterface
 
