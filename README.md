@@ -1,6 +1,20 @@
 # J Tech Photonics Laser Tool (Community version)
 This Inkscape extension generates gcode for laser cutters and plotting machines from an SVG file.
 
+--------------
+
+This experimental fork enables an option to modulate the laser's power level throughout the print by changing the path's sroke width. In other respects it is compatible with earlier plugins.
+
+If you want to test having the thickness of the stroke (line in the svg) controlling laser power, Open the extension at **Extension** > **Generate Laser Gcode** > **J Tech Community Laser Tool**. Insert a `%` sign before the numeric portion of your laser's Tool Power Command. 
+
+For example, if your Power Command is "S1000", change it to "S%1000". Now this extension will emit gcode that varies the laser's power level depending on stroke widths in the svg. Paths that are 0.10mm in width will reduce power to 10% of the number you specify. Paths that are 0.20mm in width will set laser power to 20%. Widths of 1mm or more will use maximum power, or whatever the Tool Power Command says is the maximum power level.
+
+You will need [this fork of the SvgToGcode](https://github.com/themanyone/SvgToGcode) library for this to work. The new library also adjusts laser speed based on stroke color. Black is 10% speed. White is 100% speed. Other colors reduce the laser's speed somewhere in the middle, depending on how dark they are. In this way, you should have full control of the laser's power and speed throughout a print.
+
+If the various line widths and colors are not desirable to see in Inkscape, go to **View** > **Display Mode** > **Outline**. 
+
+--------------
+
 Version 2.0 just released and there are a lot of changes! If you want you can still access legacy releases (below 2.0) 
  on the [releases page](https://github.com/JTechPhotonics/J-Tech-Photonics-Laser-Tool/releases).
 Instructions for older versions can be found on [JTP's website](https://jtechphotonics.com/?page_id=2012).
