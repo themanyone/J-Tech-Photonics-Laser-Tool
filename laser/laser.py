@@ -16,7 +16,6 @@ sodipodi_name_space = "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
 
 inx_filename = "laser.inx"
 
-
 def generate_custom_interface(laser_off_command, laser_power_command):
     """Wrapper function for generating a Gcode interface with a custom laser power command"""
 
@@ -34,7 +33,7 @@ def generate_custom_interface(laser_off_command, laser_power_command):
             [a, b, c] = laser_power_command.partition("%")
             if len(c):
             # Then calculate laser power as a function of line width.
-                set_power = linear_map(0, float(c), power)
+                set_power = round(linear_map(0, float(c), power))
                 return f"{a}{set_power};"
             else:
                 return f"{laser_power_command}"
@@ -66,12 +65,12 @@ class GcodeExtension(EffectExtension):
         if self.options.filename:
             filename = self.options.filename
             if '.' not in filename:
-                filename += ".gcode"
+                filename += ".gc"
         elif self.document_path():
             filename, extension = self.document_path().split('.')
-            filename = filename.split('/')[-1] + '.gcode'
+            filename = filename.split('/')[-1] + '.gc'
         else:
-            filename = "untitled.gcode"
+            filename = "untitled.gc"
 
         output_path = os.path.join(self.options.directory, filename)
 
@@ -119,7 +118,8 @@ class GcodeExtension(EffectExtension):
 
         # Generate gcode
         gcode_compiler = Compiler(custom_interface, self.options.travel_speed, self.options.cutting_speed,
-                                  self.options.pass_depth, dwell_time=self.options.dwell_time, custom_header=header,
+                                  self.options.pass_depth,
+                                  dwell_time=self.options.dwell_time, custom_header=header,
                                   custom_footer=footer, unit=self.options.unit)
 
         transformation = Transformation()
