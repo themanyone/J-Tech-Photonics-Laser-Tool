@@ -2,7 +2,7 @@ import os
 
 from lxml import etree
 from xml.etree import ElementTree as xml_tree
-from inkex import EffectExtension, Boolean
+from inkex import EffectExtension, Boolean, NSS
 
 from svg_to_gcode.svg_parser import parse_root, Transformation, debug_methods
 from svg_to_gcode.geometry import LineSegmentChain
@@ -33,6 +33,7 @@ def generate_custom_interface(laser_off_command, laser_power_command):
             [a, b, c] = laser_power_command.partition("%")
             if len(c):
             # Then calculate laser power as a function of line width.
+                c = c.partition(" ")[0]
                 set_power = round(linear_map(0, float(c), power))
                 return f"{a}{set_power};"
             else:
@@ -60,6 +61,16 @@ class GcodeExtension(EffectExtension):
         except:
             self.debug(f"{self.options.directory} is not a directory")
             exit(2)
+            
+        # Get document dimensions & units
+        namedview = root.find('.//sodipodi:namedview', namespaces=NSS)
+        self.unit = namedview.get('inkscape:document-units', 'mm') if namedview is not None else 'mm'
+        
+        height = root.unittouu(root.get('height'))
+        width  = root.unittouu(root.get('width'))
+        # self.debug(f'height: {height}')
+        self.options.bed_height = height if self.options.bed_height == 0 else self.options.bed_height
+        self.options.bed_width  = width  if self.options.bed_width == 0  else self.options.bed_width
 
         # Construct output path
         if self.options.filename:

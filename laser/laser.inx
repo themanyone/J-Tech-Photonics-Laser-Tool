@@ -49,8 +49,8 @@
                 <option value="top-left">top-left</option>
             </param>
             <param name="invert_y_axis" type="bool" gui-text="Invert Y-Axis">false</param>
-            <param name="bed_width" type="float" min="0" max="999999" gui-text="Bed X Width (unit)">200</param>
-            <param name="bed_height" type="float" min="0" max="999999" gui-text="Bed Y Length (unit)">200</param>
+            <param name="bed_width" type="float" min="0" max="999999" gui-text="Bed X Width (unit) 0=auto">200</param>
+            <param name="bed_height" type="float" min="0" max="999999" gui-text="Bed Y Length (unit) 0=auto">200</param>
             <spacer/>
             <param name="horizontal_offset" type="float" min="-999999" max="999999" gui-text="Gcode X Offset (unit)">0</param>
             <param name="vertical_offset" type="float" min="-999999" max="999999" gui-text="Gcode Y Offset (unit)">0</param>
