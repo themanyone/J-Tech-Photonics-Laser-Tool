@@ -61,11 +61,16 @@ class GcodeExtension(EffectExtension):
         except:
             self.debug(f"{self.options.directory} is not a directory")
             exit(2)
-            
+
         # Get document dimensions & units
         namedview = root.find('.//sodipodi:namedview', namespaces=NSS)
-        self.unit = namedview.get('inkscape:document-units', 'mm') if namedview is not None else 'mm'
-        
+        unit = namedview.get('inkscape:document-units', 'mm') if namedview is not None else 'mm'
+        try:
+            assert unit == self.options.unit
+        except:
+            self.debug(f"\n\nUnits mismatch: Document uses '{unit}' but this tool uses '{self.options.unit}'.\n\nChange one or the other and restart.")
+            exit(2)
+
         height = root.unittouu(root.get('height'))
         width  = root.unittouu(root.get('width'))
         # self.debug(f'height: {height}')
